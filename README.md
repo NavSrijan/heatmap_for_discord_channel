@@ -9,5 +9,6 @@ $ ./generateGraph.py <csvFile.csv>
 
 ## Result
 ![src](img/img.png)
+First circle is for _AM_ and the second one is for _PM_
 
 Black: No messages
