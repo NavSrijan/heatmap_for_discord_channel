@@ -1,10 +1,14 @@
+#!/usr/bin/env python3
 import csv
 import datetime
 import math
+import sys
 from PIL import Image, ImageDraw, ImageFont
 
+file = sys.argv[1]
+
 # Reading the csv and storing it's time field in a list
-with open("15.csv") as csvfile:
+with open(file) as csvfile:
     times = []
     reader = csv.reader(csvfile)
     for i in reader:
@@ -23,17 +27,16 @@ def get_heat_dict(times, am_pm="am"):
     heat = {}
     for i in times:
         i = return_datetime_obj(i)
-        if i.date().day == date:
-            if am_pm == "am":
-                if i.time().hour > 11:
-                    break
-            if am_pm == "pm":
-                if i.time().hour < 12:
-                    continue
-            try:
-                heat[i.time().hour] = heat[i.time().hour] + 1
-            except:
-                heat[i.time().hour] = 1
+        if am_pm == "am":
+            if i.time().hour > 11:
+                break
+        if am_pm == "pm":
+            if i.time().hour < 12:
+                continue
+        try:
+            heat[i.time().hour] = heat[i.time().hour] + 1
+        except:
+            heat[i.time().hour] = 1
     j = 0
     to_add = []
     if len(heat) < 12:
@@ -69,7 +72,6 @@ def draw_heat(heat):
         theta = (30 * hour - 90)
         radius = 250
 
-        s, t = (im_size[0] // 2, 0)
 
         x = abs(radius * math.sin(theta))
         y = abs(radius * math.cos(theta))
@@ -92,7 +94,6 @@ def draw_heat(heat):
     return im
 
 
-date = 15
 im_size = (1000, 1000)
 
 heat_am = get_heat_dict(times, am_pm="am")
@@ -116,5 +117,4 @@ im = Image.new('RGBA', (im_size[0] * 2 + extra_x, im_size[1] + extra_y))
 im.paste(am, box=(extra_x // 3, extra_y // 2))
 im.paste(pm, box=(extra_x // 3 * 2 + im_size[0], extra_y // 2))
 
-im.show()
 im.save("img.png")
